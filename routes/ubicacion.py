@@ -1,25 +1,25 @@
 from fastapi import APIRouter
 from config.db import conectar_db
-from schemas.rol import Rol
+from schemas.ubicacion import Ubicacion
 import json
 import mysql.connector
 
-rol = APIRouter()
+ubicacion = APIRouter()
 
-@rol.get("/rols")
+@ubicacion.get("/ubicaciones")
 async def getall():
   cnx = conectar_db()
 
   cursor = cnx.cursor()
 
-  consulta = ("SELECT nombre, id, id_horarios FROM rols")
+  consulta = ("SELECT nombre, latitud, longitud, id FROM ubicaciones")
   cursor.execute(consulta)
   resultados = cursor.fetchall()
 
   json_resultados = {"data": []}
 
   for fila in resultados:
-    json_resultados["data"].append({"nombre": fila[0], "id": fila[1], "id_horarios": fila[2]})
+    json_resultados["data"].append({"nombre": fila[0], "latitud": fila[1], "longitud": fila[2], "id": fila[3]})
     json_resultados["ok"] = True
 
   if len(json_resultados["data"]) == 0:
@@ -31,13 +31,13 @@ async def getall():
 
   return json_resultados
 
-@rol.get("/rols/{id}")
+@ubicacion.get("/ubicaciones/{id}")
 async def getbyid(id: int):
   cnx = conectar_db()
 
   cursor = cnx.cursor()
 
-  consulta = ("SELECT nombre, id, id_horarios FROM rols WHERE id = "+str(id))
+  consulta = ("SELECT nombre, latitud, longitud, id FROM ubicaciones WHERE id = "+str(id))
   # valores = (id)
   cursor.execute(consulta)
   resultados = cursor.fetchall()
@@ -45,7 +45,7 @@ async def getbyid(id: int):
   json_resultados = {"data": []}
 
   for fila in resultados:
-    json_resultados["data"] = {"nombre": fila[0], "id": fila[1], "id_horarios": fila[2]}
+    json_resultados["data"] = {"nombre": fila[0], "latitud": fila[1], "longitud": fila[2], "id": fila[3]}
     json_resultados["ok"] = True
 
   if len(json_resultados["data"]) == 0:
@@ -57,17 +57,16 @@ async def getbyid(id: int):
 
   return json_resultados
 
-@rol.post("/rols")
-async def create(rol: Rol):
+@ubicacion.post("/ubicaciones")
+async def create(ubicacion: Ubicacion):
   cnx = conectar_db()
   cursor = cnx.cursor()
 
-  sentencia = "INSERT INTO rols (nombre, id_horarios) VALUES ('"+rol.nombre+"', "+rol.id_horarios+")"
-  # valores = (rol.nombre)
+  sentencia = "INSERT INTO ubicaciones (nombre, latitud, longitud) VALUES (%s, %s, %s)"
+  valores = (ubicacion.nombre, ubicacion.latitud, ubicacion.longitud)
 
   try:
-    # cursor.execute(sentencia, valores)
-    cursor.execute(sentencia)
+    cursor.execute(sentencia, valores)
     cnx.commit()
 
     num_filas_afectadas = cursor.rowcount
@@ -83,12 +82,12 @@ async def create(rol: Rol):
 
   return json_respuesta
 
-@rol.put("/rols/{id}")
-async def update(id: int, rol: Rol):
+@ubicacion.put("/ubicaciones/{id}")
+async def update(id: int, ubicacion: Ubicacion):
   cnx = conectar_db()
   cursor = cnx.cursor()
 
-  sentencia = "UPDATE rols SET nombre = '"+rol.nombre+"', id_horarios = '"+rol.id_horarios+"' WHERE id = "+str(id)
+  sentencia = "UPDATE ubicaciones SET nombre = '"+ubicacion.nombre+"', latitud = "+ubicacion.latitud+", longitud = "+ubicacion.longitud+" WHERE id = "+str(id)
 
   cursor.execute(sentencia)
   cnx.commit()
@@ -98,12 +97,12 @@ async def update(id: int, rol: Rol):
 
   return cursor
 
-@rol.delete("/rols/{id}")
+@ubicacion.delete("/ubicaciones/{id}")
 async def delete(id: int):
   cnx = conectar_db()
   cursor = cnx.cursor()
 
-  sentencia = "DELETE FROM rols WHERE id = "+str(id)
+  sentencia = "DELETE FROM ubicaciones WHERE id = "+str(id)
 
   cursor.execute(sentencia)
   cnx.commit()

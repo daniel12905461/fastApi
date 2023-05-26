@@ -9,6 +9,13 @@ import numpy as np
 from PIL import Image
 from facenet_pytorch import MTCNN, InceptionResnetV1
 
+from routes.dia import create
+from routes.mes import getIdMes
+from schemas.dia import Dia
+from schemas.hora import Hora
+import datetime
+import locale
+
 asistencia = APIRouter()
 
 # Cargar el modelo MTCNN para detección de rostros
@@ -39,7 +46,7 @@ async def registrarAsistencia(image: UploadFile = File(...), name: str = Form(..
   return {"ok": True, "mensaje": "La imagen se ha guardado correctamente."}
 
 @asistencia.post("/asistencia/login")
-async def registrarAsistencia(image: UploadFile = File(...), name: str = Form(...), id: str = Form(...)):
+async def registrarAsistencia(image: UploadFile = File(...), name: str = Form(...), id: str = Form(...), latitud: str = Form(...), longitud: str = Form(...)):
   # Definimos el nombre del archivo que estamos buscando
   nombre_archivo = f"{id}_{name}.jpg"
 
@@ -92,8 +99,42 @@ async def registrarAsistencia(image: UploadFile = File(...), name: str = Form(..
       print('Las imágenes no corresponden a la misma persona.')
       json_resultados["mensaje"] = "Las imágenes no corresponden a la misma persona."
       json_resultados["parecido"] = False
+      return json_resultados
+
+  # Establecer el idioma español
+  locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+
+  # Obtener la fecha y hora actual
+  fecha_actual = datetime.datetime.now()
+
+  dia = Dia(
+    nombre = fecha_actual.strftime('%A'),
+    numero = fecha_actual.strftime('%d'),
+    estado = "Presente",
+    detalle = "",
+    fecha = fecha_actual.strftime('%Y-%m-%d'),
+    id_funcionarios = id,
+    id_mes = str(await getIdMes( str(fecha_actual.strftime('%m')), str(1)))
+  )
+  # dia.nombre = fecha_actual.strftime('%A')
+  # dia.numero = fecha_actual.strftime('%d')
+  # dia.estado = "Presente"
+  # dia.detalle = ""
+  # dia.fecha = fecha_actual.strftime('%Y-%m-%d')
+  # dia.id_funcionarios = id
+  # dia.id_mes = getIdMes(fecha_actual.strftime('%m'), 1)
+
+  hora = Hora(
+    hora = fecha_actual.strftime('%H:%M:%S'),
+    latitud = latitud,
+    longitud = longitud,
+    id_dia = ""
+  )
+
+  json_resultados = await create(dia=dia,hora=hora)
 
   return json_resultados
+
 
 # Función para cargar y preprocesar una imagen
 def load_and_preprocess_image(image_path):

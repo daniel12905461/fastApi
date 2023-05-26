@@ -12,14 +12,14 @@ async def getall():
 
   cursor = cnx.cursor()
 
-  consulta = ("SELECT nombres, apellidos, ci, foto, celular, fecha_nac, id, user, password FROM funcionarios")
+  consulta = ("SELECT nombres, apellidos, ci, foto, celular, fecha_nac, id, user, password, id_rols, id_ubicaciones FROM funcionarios")
   cursor.execute(consulta)
   resultados = cursor.fetchall()
 
   json_resultados = {"data": []}
 
   for fila in resultados:
-    json_resultados["data"].append({"nombres": fila[0], "apellidos": fila[1], "ci": fila[2], "foto": fila[3], "celular": fila[4], "fecha_nac": fila[5], "id": fila[6], "user": fila[7], "password": fila[8]})
+    json_resultados["data"].append({"nombres": fila[0], "apellidos": fila[1], "ci": fila[2], "foto": fila[3], "celular": fila[4], "fecha_nac": fila[5], "id": fila[6], "user": fila[7], "password": fila[8], "id_rols": fila[9], "id_ubicaciones": fila[10]})
     json_resultados["ok"] = True
 
   if len(json_resultados["data"]) == 0:
@@ -37,7 +37,7 @@ async def getbyid(id: int):
 
   cursor = cnx.cursor()
 
-  consulta = ("SELECT nombres, apellidos, ci, foto, celular, fecha_nac, id, user, password FROM funcionarios WHERE id = "+str(id))
+  consulta = ("SELECT nombres, apellidos, ci, foto, celular, fecha_nac, id, user, password, id_rols, id_ubicaciones FROM funcionarios WHERE id = "+str(id))
   # valores = (id)
   cursor.execute(consulta)
   resultados = cursor.fetchall()
@@ -45,7 +45,7 @@ async def getbyid(id: int):
   json_resultados = {"data": []}
 
   for fila in resultados:
-    json_resultados["data"] = {"nombres": fila[0], "apellidos": fila[1], "ci": fila[2], "foto": fila[3], "celular": fila[4], "fecha_nac": fila[5], "id": fila[6], "user": fila[7], "password": fila[8]}
+    json_resultados["data"] = {"nombres": fila[0], "apellidos": fila[1], "ci": fila[2], "foto": fila[3], "celular": fila[4], "fecha_nac": fila[5], "id": fila[6], "user": fila[7], "password": fila[8], "id_rols": fila[9], "id_ubicaciones": fila[10]}
     json_resultados["ok"] = True
 
   if len(json_resultados["data"]) == 0:
@@ -62,8 +62,8 @@ async def create(funcionario: Funcionario):
   cnx = conectar_db()
   cursor = cnx.cursor()
 
-  sentencia = "INSERT INTO funcionarios (nombres, apellidos, ci, foto, celular, fecha_nac, user, password) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-  valores = (funcionario.nombres, funcionario.apellidos, funcionario.ci, funcionario.foto, funcionario.celular, funcionario.fecha_nac, funcionario.user, funcionario.password)
+  sentencia = "INSERT INTO funcionarios (nombres, apellidos, ci, foto, celular, fecha_nac, user, password, id_rols, id_ubicaciones) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+  valores = (funcionario.nombres, funcionario.apellidos, funcionario.ci, funcionario.foto, funcionario.celular, funcionario.fecha_nac, funcionario.user, funcionario.password, funcionario.id_rols, funcionario.id_ubicaciones)
 
   try:
     cursor.execute(sentencia, valores)
@@ -87,7 +87,7 @@ async def update(id: int, funcionario: Funcionario):
   cnx = conectar_db()
   cursor = cnx.cursor()
 
-  sentencia = "UPDATE funcionarios SET nombres = '"+funcionario.nombres+"', apellidos = '"+funcionario.apellidos+"', ci = '"+funcionario.ci+"', foto = '"+funcionario.foto+"', celular = '"+funcionario.celular+"', fecha_nac = '"+funcionario.fecha_nac+"', user = '"+funcionario.user+"', password = '"+funcionario.password+"' WHERE id = "+str(id)
+  sentencia = "UPDATE funcionarios SET nombres = '"+funcionario.nombres+"', apellidos = '"+funcionario.apellidos+"', ci = '"+funcionario.ci+"', foto = '"+funcionario.foto+"', celular = '"+funcionario.celular+"', fecha_nac = '"+funcionario.fecha_nac+"', user = '"+funcionario.user+"', password = '"+funcionario.password+"', id_rols = '"+funcionario.id_rols+"', id_ubicaciones = '"+funcionario.id_ubicaciones+"' WHERE id = "+str(id)
 
   cursor.execute(sentencia)
   cnx.commit()
@@ -111,3 +111,88 @@ async def delete(id: int):
   cnx.close()
 
   return cursor
+
+@funcionario.get("/funcionarios/dias-trabajados/{id}")
+async def getbyid(id: int):
+  cnx = conectar_db()
+
+  cursor = cnx.cursor()
+
+  consulta = ("SELECT nombres, apellidos, ci, foto, celular, fecha_nac, id, user, password, id_rols, id_ubicaciones FROM funcionarios")
+  cursor.execute(consulta)
+  resultados = cursor.fetchall()
+
+  json_resultados = {"data": []}
+
+  i=0
+  for fila in resultados:
+    json_resultados["data"].append({
+      "nombres": fila[0],
+      "apellidos": fila[1],
+      "ci": fila[2],
+      "foto": fila[3],
+      "celular": fila[4],
+      "fecha_nac": fila[5],
+      "id": fila[6],
+      "user": fila[7],
+      "password": fila[8],
+      "id_rols": fila[9],
+      "id_ubicaciones": fila[10]
+    })
+    json_resultados["ok"] = True
+
+    consulta = ("SELECT nombre, numero, estado, detalle, fecha, id FROM dia WHERE id_funcionarios = "+str(fila[6])+" AND id_mes = "+str(id))
+    cursor.execute(consulta)
+    resultados_aux = cursor.fetchall()
+
+    json_resultados["data"][i]["dias"] = []
+
+    for fila_aux in resultados_aux:
+      json_resultados["data"][i]["dias"].append({
+        "nombre": fila_aux[0],
+        "numero": fila_aux[1],
+        "estado": fila_aux[2],
+        "detalle": fila_aux[3],
+        "fecha": fila_aux[4],
+        "id": fila_aux[5]
+      })
+
+    consulta = ("SELECT h.hora_inicio, h.hora_inicio_reseso, h.hora_fin_reseso, h.hora_fin, h.domingo, h.lunes, h.martes, h.miercoles, h.jueves, h.viernes, h.sabado, h.id, r.nombre, r.id_horarios FROM horarios h JOIN rols r ON h.id = r.id_horarios AND r.id = " + str(fila[9]))
+    cursor.execute(consulta)
+    resultados_aux = cursor.fetchall()
+
+    json_resultados["data"][i]["rol"] = {}
+    json_resultados["data"][i]["rol"]['horario'] = {}
+
+    for fila_aux in resultados_aux:
+      json_resultados["data"][i]["rol"] = {
+        "id": fila[9],
+        "nombre": fila_aux[12],
+        "id_horarios": fila_aux[13],
+      }
+
+      json_resultados["data"][i]["rol"]['horario'] = {
+        "hora_inicio": str(fila_aux[0]),
+        "hora_inicio_reseso": str(fila_aux[1]),
+        "hora_fin_reseso": str(fila_aux[2]),
+        "hora_fin": str(fila_aux[3]),
+        "domingo": fila_aux[4],
+        "lunes": fila_aux[5],
+        "martes": fila_aux[6],
+        "miercoles": fila_aux[7],
+        "jueves": fila_aux[8],
+        "viernes": fila_aux[9],
+        "sabado": fila_aux[10],
+        "id": fila_aux[11]
+      }
+
+    i=i+1
+
+  if len(json_resultados["data"]) == 0:
+    json_resultados["mensaje"] = "No se encontraron resultados para la consulta."
+    json_resultados["ok"] = False
+
+  cursor.close()
+  cnx.close()
+
+  return json_resultados

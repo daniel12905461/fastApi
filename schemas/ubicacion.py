@@ -1,7 +1,8 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class Rol(BaseModel):
+class Ubicacion(BaseModel):
     id: Optional[str]
     nombre: str
-    id_horarios: Optional[str]
+    latitud: Optional[str]
+    longitud: Optional[str]

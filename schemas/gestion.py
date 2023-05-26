@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class Rol(BaseModel):
+class Gestion(BaseModel):
     id: Optional[str]
-    nombre: str
-    id_horarios: Optional[str]
+    nombres: str

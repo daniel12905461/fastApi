@@ -11,3 +11,5 @@ class Funcionario(BaseModel):
     fecha_nac: str
     user: str
     password: str
+    id_rols: Optional[str]
+    id_ubicaciones: Optional[str]

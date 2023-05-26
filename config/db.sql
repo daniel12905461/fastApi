@@ -5,21 +5,6 @@ USE proyecto_caleb;
 -- -----------------------------------------------------
 -- Table `funcionarios`.`AcuaticClub`
 -- -----------------------------------------------------
-CREATE TABLE funcionarios(
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  nombres VARCHAR(45) NOT NULL,
-  apellidos VARCHAR(45) NOT NULL,
-  ci VARCHAR(45) NOT NULL,
-  foto VARCHAR(45) NOT NULL,
-  celular VARCHAR(45) NULL,
-  fecha_nac DATE NOT NULL,
-  user VARCHAR(45) NULL,
-  password VARCHAR(45) NULL
-);
-
--- -----------------------------------------------------
--- Table `funcionarios`.`AcuaticClub`
--- -----------------------------------------------------
 CREATE TABLE horarios(
   id INT PRIMARY KEY AUTO_INCREMENT,
   hora_inicio TIME NOT NULL,
@@ -40,16 +25,75 @@ CREATE TABLE horarios(
 -- -----------------------------------------------------
 CREATE TABLE rols(
   id INT PRIMARY KEY AUTO_INCREMENT,
+  nombre VARCHAR(45) NOT NULL,
+  id_horarios INT NOT NULL,
+  FOREIGN KEY (id_horarios) REFERENCES horarios(id)
+);
+
+
+-- -----------------------------------------------------
+-- Table `biblioteca`.`TipoTutor`
+-- -----------------------------------------------------
+CREATE TABLE ubicaciones (
+  id INT PRIMARY KEY  AUTO_INCREMENT,
+  nombre VARCHAR(45) NOT NULL,
+  latitud DECIMAL(10, 8) NOT NULL,
+  longitud DECIMAL(11, 8) NOT NULL
+);
+
+-- -----------------------------------------------------
+-- Table `funcionarios`.`AcuaticClub`
+-- -----------------------------------------------------
+CREATE TABLE funcionarios(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  nombres VARCHAR(45) NOT NULL,
+  apellidos VARCHAR(45) NOT NULL,
+  ci VARCHAR(45) NOT NULL,
+  foto VARCHAR(45) NOT NULL,
+  celular VARCHAR(45) NULL,
+  fecha_nac DATE NOT NULL,
+  user VARCHAR(45) NULL,
+  password VARCHAR(45) NULL,
+  id_rols INT NOT NULL,
+  FOREIGN KEY (id_rols) REFERENCES rols(id),
+  id_ubicaciones INT NOT NULL,
+  FOREIGN KEY (id_ubicaciones) REFERENCES ubicaciones(id)
+);
+
+CREATE TABLE gestion(
+  id INT PRIMARY KEY AUTO_INCREMENT,
   nombre VARCHAR(45) NOT NULL
 );
 
--- -- -- -----------------------------------------------------
--- -- -- Table `biblioteca`.`TipoTutor`
--- -- -- -----------------------------------------------------
--- -- CREATE TABLE TipoTutor (
--- -- IdTipoTutor INT PRIMARY KEY  AUTO_INCREMENT,
--- -- TipoTutor VARCHAR(45) NOT NULL
--- -- );
+CREATE TABLE mes(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  nombre VARCHAR(45) NOT NULL,
+  numero INT NOT NULL,
+  id_gestion INT NOT NULL,
+  FOREIGN KEY (id_gestion) REFERENCES gestion(id)
+);
+
+CREATE TABLE dia(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  nombre VARCHAR(45) NOT NULL,
+  numero INT NOT NULL,
+  estado VARCHAR(45) NOT NULL,
+  detalle VARCHAR(45) NULL,
+  fecha DATE NOT NULL,
+  id_funcionarios INT NOT NULL,
+  FOREIGN KEY (id_funcionarios) REFERENCES funcionarios(id),
+  id_mes INT NOT NULL,
+  FOREIGN KEY (id_mes) REFERENCES mes(id)
+);
+
+CREATE TABLE ubicacion_hora(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  hora TIME NOT NULL,
+  latitud DECIMAL(10, 8) NOT NULL,
+  longitud DECIMAL(11, 8) NOT NULL,
+  id_dia INT NOT NULL,
+  FOREIGN KEY (id_dia) REFERENCES dia(id)
+);
 
 
 -- -- -- -----------------------------------------------------

@@ -47,14 +47,18 @@ async def getbyid(id: int):
     json_resultados["data"] = {"nombre": fila[0]}
     json_resultados["ok"] = True
 
-    consulta = ("SELECT nombre, id FROM mes WHERE id_gestion = "+str(id))
+    consulta = ("SELECT nombre, numero, id FROM mes WHERE id_gestion = "+str(id))
 
     cursor.execute(consulta)
     resultados_aux = cursor.fetchall()
 
     json_resultados["data"]["meses"] = []
     for fila_aux in resultados_aux:
-      json_resultados["data"]["meses"].append({"nombre": fila_aux[0], "id": fila_aux[1]})
+      json_resultados["data"]["meses"].append({
+        "nombre": fila_aux[0],
+        "numero": fila_aux[1],
+        "id": fila_aux[2]
+      })
 
   if len(json_resultados["data"]) == 0:
     json_resultados["mensaje"] = "No se encontraron resultados para la consulta."

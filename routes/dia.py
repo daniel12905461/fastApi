@@ -95,7 +95,7 @@ async def getallfuncionario(id: int):
 
   cursor = cnx.cursor()
 
-  consulta = ("SELECT nombre, numero, estado, detalle, fecha, id_funcionarios, id_mes FROM dia WHERE id_funcionarios = "+str(id))
+  consulta = ("SELECT nombre, numero, estado, detalle, fecha, hora_inicio, hora_inicio_reseso, hora_fin_reseso, hora_fin, id_funcionarios, id_mes FROM dia WHERE id_funcionarios = "+str(id))
   cursor.execute(consulta)
   resultados = cursor.fetchall()
 
@@ -108,8 +108,12 @@ async def getallfuncionario(id: int):
       "estado": fila[2],
       "detalle": fila[3],
       "fecha": fila[4],
-      "id_funcionarios": fila[5],
-      "id_mes": fila[6]
+      "hora_inicio": str(fila[5]),
+      "hora_inicio_reseso": str(fila[6]),
+      "hora_fin_reseso": str(fila[7]),
+      "hora_fin": str(fila[8]),
+      "id_funcionarios": fila[9],
+      "id_mes": fila[10]
     })
     json_resultados["ok"] = True
 

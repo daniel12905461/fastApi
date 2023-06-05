@@ -41,9 +41,9 @@ VALUES
 
 
 INSERT INTO dia
-(nombre, numero, estado, detalle, fecha, id_funcionarios, id_mes)
+(nombre, numero, estado, detalle, fecha, hora_inicio, hora_inicio_reseso, hora_fin_reseso, hora_fin, id_funcionarios, id_mes)
 VALUES
-('Lunes',5,'Presente', '', '2023-06-05', 1, 1);
+('Lunes',5,'Presente', '', '2023-06-05', '07:00:00', '07:00:00', '07:00:00', '07:00:00', 1, 1);
 
 
 -- INSERT INTO Anio

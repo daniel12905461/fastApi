@@ -48,6 +48,28 @@ async def getbyid(id: int):
     json_resultados["data"] = {"nombre": fila[0], "id": fila[1], "id_horarios": fila[2]}
     json_resultados["ok"] = True
 
+    consulta = ("SELECT h.hora_inicio, h.hora_inicio_reseso, h.hora_fin_reseso, h.hora_fin, h.domingo, h.lunes, h.martes, h.miercoles, h.jueves, h.viernes, h.sabado, h.id, r.nombre, r.id_horarios FROM horarios h JOIN rols r ON h.id = r.id_horarios AND r.id = " + str(id))
+    cursor.execute(consulta)
+    resultados_aux = cursor.fetchall()
+
+    json_resultados["data"]['horario'] = {}
+
+    for fila_aux in resultados_aux:
+      json_resultados["data"]['horario'] = {
+        "hora_inicio": str(fila_aux[0]),
+        "hora_inicio_reseso": str(fila_aux[1]),
+        "hora_fin_reseso": str(fila_aux[2]),
+        "hora_fin": str(fila_aux[3]),
+        "domingo": fila_aux[4],
+        "lunes": fila_aux[5],
+        "martes": fila_aux[6],
+        "miercoles": fila_aux[7],
+        "jueves": fila_aux[8],
+        "viernes": fila_aux[9],
+        "sabado": fila_aux[10],
+        "id": fila_aux[11]
+      }
+
   if len(json_resultados["data"]) == 0:
     json_resultados["mensaje"] = "No se encontraron resultados para la consulta."
     json_resultados["ok"] = False

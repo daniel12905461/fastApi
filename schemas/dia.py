@@ -12,5 +12,6 @@ class Dia(BaseModel):
     hora_inicio_reseso: str
     hora_fin_reseso: str
     hora_fin: str
+    posicion: str
     id_funcionarios: Optional[str]
     id_mes: Optional[str]

@@ -141,7 +141,7 @@ async def getbyid(id: int):
     })
     json_resultados["ok"] = True
 
-    consulta = ("SELECT nombre, numero, estado, detalle, fecha, id FROM dia WHERE id_funcionarios = "+str(fila[6])+" AND id_mes = "+str(id))
+    consulta = ("SELECT nombre, numero, estado, detalle, fecha, hora_inicio, hora_inicio_reseso, hora_fin_reseso, hora_fin, posicion, hora_retrasos, id_funcionarios, id_mes, id FROM dia WHERE id_funcionarios = "+str(fila[6])+" AND id_mes = "+str(id))
     cursor.execute(consulta)
     resultados_aux = cursor.fetchall()
 
@@ -154,7 +154,15 @@ async def getbyid(id: int):
         "estado": fila_aux[2],
         "detalle": fila_aux[3],
         "fecha": fila_aux[4],
-        "id": fila_aux[5]
+        "hora_inicio": str(fila_aux[5]),
+        "hora_inicio_reseso": str(fila_aux[6]),
+        "hora_fin_reseso": str(fila_aux[7]),
+        "hora_fin": str(fila_aux[8]),
+        "posicion": fila_aux[9],
+        "hora_retrasos": str(fila_aux[10]),
+        "id_funcionarios": fila_aux[11],
+        "id_mes": fila_aux[12],
+        "id": fila_aux[13]
       })
 
     consulta = ("SELECT h.hora_inicio, h.hora_inicio_reseso, h.hora_fin_reseso, h.hora_fin, h.domingo, h.lunes, h.martes, h.miercoles, h.jueves, h.viernes, h.sabado, h.id, r.nombre, r.id_horarios FROM horarios h JOIN rols r ON h.id = r.id_horarios AND r.id = " + str(fila[9]))

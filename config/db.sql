@@ -84,6 +84,8 @@ CREATE TABLE dia(
   hora_inicio_reseso TIME NOT NULL,
   hora_fin_reseso TIME NOT NULL,
   hora_fin TIME NOT NULL,
+  posicion INT NOT NULL,
+  hora_retrasos TIME NOT NULL,
   id_funcionarios INT NOT NULL,
   FOREIGN KEY (id_funcionarios) REFERENCES funcionarios(id),
   id_mes INT NOT NULL,

@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from routes.user import user
 from routes.funcionario import funcionario
 from routes.horario import horario
@@ -8,6 +9,7 @@ from routes.asistencia import asistencia
 from routes.ubicacion import ubicacion
 from routes.gestion import gestion
 from routes.dia import dias
+from routes.ubicacionhora import ubicacionHoras
 from fastapi.middleware.cors import CORSMiddleware
 from sockets.sockets import sio_app
 
@@ -32,5 +34,7 @@ app.include_router(asistencia)
 app.include_router(ubicacion)
 app.include_router(gestion)
 app.include_router(dias)
+app.include_router(ubicacionHoras)
 
 app.mount('/sio', app=sio_app)
+app.mount("/public", StaticFiles(directory="public"), name="public")

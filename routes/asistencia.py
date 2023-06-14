@@ -113,16 +113,14 @@ async def registrarAsistencia(image: UploadFile = File(...), name: str = Form(..
     estado = "Presente",
     detalle = "",
     fecha = fecha_actual.strftime('%Y-%m-%d'),
+    hora_inicio = fecha_actual.strftime('%H:%M:%S'),
+    hora_inicio_reseso = fecha_actual.strftime('%H:%M:%S'),
+    hora_fin_reseso = fecha_actual.strftime('%H:%M:%S'),
+    hora_fin = fecha_actual.strftime('%H:%M:%S'),
+    posicion = 1,
     id_funcionarios = id,
     id_mes = str(await getIdMes( str(fecha_actual.strftime('%m')), str(1)))
   )
-  # dia.nombre = fecha_actual.strftime('%A')
-  # dia.numero = fecha_actual.strftime('%d')
-  # dia.estado = "Presente"
-  # dia.detalle = ""
-  # dia.fecha = fecha_actual.strftime('%Y-%m-%d')
-  # dia.id_funcionarios = id
-  # dia.id_mes = getIdMes(fecha_actual.strftime('%m'), 1)
 
   hora = Hora(
     hora = fecha_actual.strftime('%H:%M:%S'),

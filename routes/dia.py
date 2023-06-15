@@ -146,7 +146,7 @@ async def create(dia: Dia, hora: Hora):
   json_resultados = {"data": []}
 
   for fila in resultados:
-    coordenada1 = (fila[1], fila[2])
+    coordenada1 = (fila[2], fila[1])
     coordenada2 = (hora.latitud, hora.longitud)
     rango_deseado = 50
 

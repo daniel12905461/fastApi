@@ -148,9 +148,9 @@ async def create(dia: Dia, hora: Hora):
   for fila in resultados:
     coordenada1 = (fila[1], fila[2])
     coordenada2 = (hora.latitud, hora.longitud)
-    rango_deseado = 100
+    rango_deseado = 50
 
-    if not verificar_rango(coordenada1, coordenada2, rango_deseado):
+    if verificar_rango(coordenada1, coordenada2, rango_deseado):
       print("Las coordenadas están fuera del rango deseado.")
       json_resultados["mensaje"] = "Las coordenadas están fuera del rango desaedo."
       json_resultados["ok"] = False
@@ -284,7 +284,7 @@ def createOrUpdateDia(dia: Dia):
     estado = 'Tarde'
 
   sentencia = "INSERT INTO dia (nombre, numero, estado, detalle, fecha, hora_inicio, hora_inicio_reseso, hora_fin_reseso, hora_fin, posicion, hora_retrasos, id_funcionarios, id_mes) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-  valores = (dia.nombre, dia.numero, estado, dia.detalle, dia.fecha, dia.hora_inicio, '00:00:00', '00:00:00', '00:00:00', dia.posicion, hora_retrasos, dia.id_funcionarios, dia.id_mes)
+  valores = (quitar_acentos(dia.nombre), dia.numero, estado, dia.detalle, dia.fecha, dia.hora_inicio, '00:00:00', '00:00:00', '00:00:00', dia.posicion, hora_retrasos, dia.id_funcionarios, dia.id_mes)
 
   cursor.execute(sentencia, valores)
   cnx.commit()
@@ -301,3 +301,10 @@ def comparacionHoras(hora1_aux, hora2_aux):
     # hora_retrasos = hora2 - hora1
     # estado = 'Tarde'
     json_resultados = {"hora_retrasos": hora2 - hora1, "estado": 'Tarde'}
+
+def quitar_acentos(texto):
+  acentuadas = ["á", "é", "í", "ó", "ú", "ñ"]
+  sin_acento = ["a", "e", "i", "o", "u", "n"]
+  for i in range(len(acentuadas)):
+      texto = texto.replace(acentuadas[i], sin_acento[i])
+  return texto

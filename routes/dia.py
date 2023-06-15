@@ -150,7 +150,7 @@ async def create(dia: Dia, hora: Hora):
     coordenada2 = (hora.latitud, hora.longitud)
     rango_deseado = 50
 
-    if verificar_rango(coordenada1, coordenada2, rango_deseado):
+    if not verificar_rango(coordenada1, coordenada2, rango_deseado):
       print("Las coordenadas están fuera del rango deseado.")
       json_resultados["mensaje"] = "Las coordenadas están fuera del rango desaedo."
       json_resultados["ok"] = False

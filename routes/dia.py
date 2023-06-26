@@ -1,3 +1,4 @@
+from cmath import sqrt
 from fastapi import APIRouter
 from config.db import conectar_db
 from schemas.dia import Dia
@@ -150,7 +151,8 @@ async def create(dia: Dia, hora: Hora):
     coordenada2 = (hora.latitud, hora.longitud)
     rango_deseado = 50
 
-    if not verificar_rango(coordenada1, coordenada2, rango_deseado):
+    # if not verificar_rango(coordenada1, coordenada2, rango_deseado):
+    if not verificar_rango(fila[2], fila[1], hora.latitud, hora.longitud, rango_deseado):
       print("Las ubicacion están fuera del rango deseado.")
       json_resultados["mensaje"] = "Las coordenadas están fuera del rango desaedo."
       json_resultados["ok"] = False
@@ -168,14 +170,32 @@ async def create(dia: Dia, hora: Hora):
 
   return json_resultados
 
-def calcular_distancia(coord1, coord2):
-  x1, y1 = coord1
-  x2, y2 = coord2
-  distancia = math.sqrt((float(x2) - float(x1)) ** 2 + (float(y2) - float(y1)) ** 2)
-  return distancia
+# def calcular_distancia(coord1, coord2):
+#   x1, y1 = coord1
+#   x2, y2 = coord2
+#   distancia = math.sqrt((float(x2) - float(x1)) ** 2 + (float(y2) - float(y1)) ** 2)
+#   return distancia
 
-def verificar_rango(coord1, coord2, rango):
-  distancia = calcular_distancia(coord1, coord2)
+def calcular_distancia_entre_coordenadas(lat1, lon1, lat2, lon2):
+    # Convertir las coordenadas de grados a radianes
+    lat1_rad = math.radians(lat1)
+    lon1_rad = math.radians(lon1)
+    lat2_rad = math.radians(lat2)
+    lon2_rad = math.radians(lon2)
+
+    # Calcular la diferencia de longitud y latitud
+    dlat = lat2_rad - lat1_rad
+    dlon = lon2_rad - lon1_rad
+
+    # Calcular la distancia utilizando la fórmula de la distancia euclidiana
+    distancia = sqrt(dlat**2 + dlon**2) * 6371000  # Radio medio de la Tierra en metros
+
+    return distancia
+
+# def verificar_rango(coord1, coord2, rango):
+def verificar_rango(lat1, lon1, lat2, lon2, rango):
+  # distancia = calcular_distancia(coord1, coord2)
+  distancia = calcular_distancia_entre_coordenadas(lat1, lon1, lat2, lon2)
   print(distancia)
   if distancia <= rango:
     return True

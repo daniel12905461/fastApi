@@ -6,6 +6,7 @@ def conectar_db():
     # Crea la conexión a la base de datos
     conexion = mysql.connector.connect(
         host="localhost",
+        port=3310,
         user="root",
         password="12345",
         database="proyecto_caleb"

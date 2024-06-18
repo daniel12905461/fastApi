@@ -1,7 +1,7 @@
 INSERT INTO horarios
 (hora_inicio, hora_inicio_reseso, hora_fin_reseso, hora_fin, domingo, lunes, martes, miercoles, jueves, viernes, sabado)
 VALUES
-('07:00:00', '07:00:00', '07:00:00', '07:00:00', 0, 1, 1, 1, 1, 1, 0);
+('07:00:00', '12:00:00', '13:00:00', '17:00:00', 0, 1, 1, 1, 1, 1, 0);
 
 INSERT INTO rols
 (nombre, id_horarios)
@@ -16,7 +16,7 @@ VALUES
 INSERT INTO funcionarios
 (nombres, apellidos, ci, foto, celular, fecha_nac, user, password, id_rols, id_ubicaciones)
 VALUES
-('daniel', 'delgado', '123', '', '321', '1999-10-19', 'daniel', 'daniel', 1, 1);
+('Caleb', 'Yapura', '123', '', '321', '1999-10-19', 'caleb', 'caleb', 1, 1);
 
 INSERT INTO gestion
 (nombre)

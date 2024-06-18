@@ -58,7 +58,7 @@ async def getbyid(id: int):
 
   for fila in resultados:
     json_resultados["data"] = {
-      "hora_inicio": str(fila[0]),
+      "hora_inicio": '0'+str(fila[0]),
       "hora_inicio_reseso": str(fila[1]),
       "hora_fin_reseso": str(fila[2]),
       "hora_fin": str(fila[3]),

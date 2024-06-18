@@ -152,7 +152,7 @@ async def create(dia: Dia, hora: Hora):
     rango_deseado = 50
 
     # if not verificar_rango(coordenada1, coordenada2, rango_deseado):
-    if not verificar_rango(fila[2], fila[1], hora.latitud, hora.longitud, rango_deseado):
+    if verificar_rango(fila[2], fila[1], hora.latitud, hora.longitud, rango_deseado):
       print("Las ubicacion están fuera del rango deseado.")
       json_resultados["mensaje"] = "Las coordenadas están fuera del rango desaedo."
       json_resultados["ok"] = False
@@ -178,17 +178,17 @@ async def create(dia: Dia, hora: Hora):
 
 def calcular_distancia_entre_coordenadas(lat1, lon1, lat2, lon2):
     # Convertir las coordenadas de grados a radianes
-    lat1_rad = math.radians(lat1)
-    lon1_rad = math.radians(lon1)
-    lat2_rad = math.radians(lat2)
-    lon2_rad = math.radians(lon2)
+    lat1_rad = math.radians(float(lat1))
+    lon1_rad = math.radians(float(lon1))
+    lat2_rad = math.radians(float(lat2))
+    lon2_rad = math.radians(float(lon2))
 
     # Calcular la diferencia de longitud y latitud
     dlat = lat2_rad - lat1_rad
     dlon = lon2_rad - lon1_rad
 
     # Calcular la distancia utilizando la fórmula de la distancia euclidiana
-    distancia = sqrt(dlat**2 + dlon**2) * 6371000  # Radio medio de la Tierra en metros
+    distancia = math.sqrt(dlat**2 + dlon**2) * 6371000  # Radio medio de la Tierra en metros
 
     return distancia
 
@@ -197,7 +197,7 @@ def verificar_rango(lat1, lon1, lat2, lon2, rango):
   # distancia = calcular_distancia(coord1, coord2)
   distancia = calcular_distancia_entre_coordenadas(lat1, lon1, lat2, lon2)
   print(distancia)
-  if distancia <= rango:
+  if distancia >= rango:
     return True
   else:
     return False

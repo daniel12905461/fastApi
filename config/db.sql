@@ -101,6 +101,16 @@ CREATE TABLE ubicacion_hora(
   FOREIGN KEY (id_dia) REFERENCES dia(id)
 );
 
+CREATE TABLE permisos(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  motivo TIME NOT NULL,
+  aprobado TINYINT NOT NULL,
+  id_dia INT NOT NULL,
+  FOREIGN KEY (id_dia) REFERENCES dia(id),
+  id_funcionarios INT NOT NULL,
+  FOREIGN KEY (id_funcionarios) REFERENCES funcionarios(id)
+);
+
 
 -- -- -- -----------------------------------------------------
 -- -- -- Table `biblioteca`.`Tutor`

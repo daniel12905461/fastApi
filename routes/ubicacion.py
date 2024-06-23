@@ -87,7 +87,7 @@ async def update(id: int, ubicacion: Ubicacion):
   cnx = conectar_db()
   cursor = cnx.cursor()
 
-  sentencia = "UPDATE ubicaciones SET nombre = '"+ubicacion.nombre+"', latitud = "+ubicacion.latitud+", longitud = "+ubicacion.longitud+" WHERE id = "+str(id)
+  sentencia = "UPDATE ubicaciones SET nombre = '"+ubicacion.nombre+"', latitud = "+str(ubicacion.latitud)+", longitud = "+str(ubicacion.longitud)+" WHERE id = "+str(id)
 
   cursor.execute(sentencia)
   cnx.commit()
@@ -95,7 +95,7 @@ async def update(id: int, ubicacion: Ubicacion):
   cursor.close()
   cnx.close()
 
-  return cursor
+  return 'dda'
 
 @ubicacion.delete("/ubicaciones/{id}")
 async def delete(id: int):

@@ -10,6 +10,7 @@ from routes.ubicacion import ubicacion
 from routes.gestion import gestion
 from routes.dia import dias
 from routes.ubicacionhora import ubicacionHoras
+from routes.permiso import permiso
 from fastapi.middleware.cors import CORSMiddleware
 from sockets.sockets import sio_app
 
@@ -35,6 +36,7 @@ app.include_router(ubicacion)
 app.include_router(gestion)
 app.include_router(dias)
 app.include_router(ubicacionHoras)
+app.include_router(permiso)
 
 app.mount('/sio', app=sio_app)
 app.mount("/public", StaticFiles(directory="public"), name="public")

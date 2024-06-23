@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-from geopy import distance
-=======
->>>>>>> 70b1c49b030deff3aa7aaf6265fe67817f468aae
 from cmath import sqrt
 from fastapi import APIRouter
 from config.db import conectar_db
@@ -156,12 +152,7 @@ async def create(dia: Dia, hora: Hora):
     rango_deseado = 50
 
     # if not verificar_rango(coordenada1, coordenada2, rango_deseado):
-<<<<<<< HEAD
-    print(fila[2], fila[1], hora.latitud, hora.longitud);
-    if not verificar_rango(fila[2], fila[1], hora.latitud, hora.longitud, rango_deseado):
-=======
     if verificar_rango(fila[2], fila[1], hora.latitud, hora.longitud, rango_deseado):
->>>>>>> 70b1c49b030deff3aa7aaf6265fe67817f468aae
       print("Las ubicacion están fuera del rango deseado.")
       json_resultados["mensaje"] = "Las coordenadas están fuera del rango desaedo."
       json_resultados["ok"] = False
@@ -192,59 +183,21 @@ def calcular_distancia_entre_coordenadas(lat1, lon1, lat2, lon2):
     lat2_rad = math.radians(float(lat2))
     lon2_rad = math.radians(float(lon2))
 
-<<<<<<< HEAD
-    # # Calcular la diferencia de longitud y latitud
-    # dlat = lat2_rad - lat1_rad
-    # dlon = lon2_rad - lon1_rad
-
-    # # Calcular la distancia utilizando la fórmula de la distancia euclidiana
-    # distancia = math.sqrt(dlat**2 + dlon**2) * 6371000  # Radio medio de la Tierra en metros
-
-    # return distancia
-    # Radio de la Tierra en metros
-    radio_tierra = 6371000
-
-    # Diferencia de latitud y longitud
-    dlat = lat2_rad - lat1_rad
-    dlon = lon2_rad - lon1_rad
- # Verificar si las coordenadas son prácticamente idénticas
-    if abs(dlat) < 1e-8 and abs(dlon) < 1e-8:
-        return 0.0
-    # Calcular la distancia utilizando la fórmula del haversine
-    a = math.sin(dlat/2)*2 + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(dlon/2)*2
-    # Ajustar el valor de 'a' si está fuera del rango válido
-    if a > 1.0:
-        a = 1.0
-    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
-    distancia = radio_tierra * c
-=======
     # Calcular la diferencia de longitud y latitud
     dlat = lat2_rad - lat1_rad
     dlon = lon2_rad - lon1_rad
 
     # Calcular la distancia utilizando la fórmula de la distancia euclidiana
     distancia = math.sqrt(dlat**2 + dlon**2) * 6371000  # Radio medio de la Tierra en metros
->>>>>>> 70b1c49b030deff3aa7aaf6265fe67817f468aae
 
     return distancia
 
 # def verificar_rango(coord1, coord2, rango):
 def verificar_rango(lat1, lon1, lat2, lon2, rango):
   # distancia = calcular_distancia(coord1, coord2)
-<<<<<<< HEAD
-  # distancia = calcular_distancia_entre_coordenadas(lat1, lon1, lat2, lon2)
-  coord1 = (float(lat1), float(lon1))
-  coord2 = (float(lat2), float(lon2))
-
-  distancia = distance.distance(coord1, coord2).meters
-  print("La distancia entre las coordenadas es de", distancia, "metros.")
-  
-  if distancia <= rango:
-=======
   distancia = calcular_distancia_entre_coordenadas(lat1, lon1, lat2, lon2)
   print(distancia)
   if distancia >= rango:
->>>>>>> 70b1c49b030deff3aa7aaf6265fe67817f468aae
     return True
   else:
     return False

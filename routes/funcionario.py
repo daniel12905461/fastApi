@@ -7,12 +7,19 @@ import mysql.connector
 funcionario = APIRouter()
 
 @funcionario.get("/funcionarios")
-async def getall():
+async def getall(ubicacion_id: int = 0):
   cnx = conectar_db()
 
   cursor = cnx.cursor()
 
-  consulta = ("SELECT nombres, apellidos, ci, foto, celular, fecha_nac, id, user, password, id_rols, id_ubicaciones FROM funcionarios")
+  # consulta = ("SELECT nombres, apellidos, ci, foto, celular, fecha_nac, id, user, password, id_rols, id_ubicaciones FROM funcionarios")
+  
+  consulta = ("SELECT f.nombres, f.apellidos, f.ci, f.foto, f.celular, f.fecha_nac, f.id, f.user, f.password, f.id_rols, f.id_ubicaciones FROM funcionarios f ")
+  
+  if ubicacion_id != 0:
+    consulta = consulta + ("JOIN ubicaciones u ON f.id_ubicaciones = u.id " +
+      "AND u.id = " + str(ubicacion_id) + " ")
+    
   cursor.execute(consulta)
   resultados = cursor.fetchall()
 
@@ -113,12 +120,14 @@ async def delete(id: int):
   return cursor
 
 @funcionario.get("/funcionarios/dias-trabajados/{id}")
-async def getbyid(id: int):
+async def getbyid(id: int, id_ubicacion: int):
   cnx = conectar_db()
 
   cursor = cnx.cursor()
 
-  consulta = ("SELECT nombres, apellidos, ci, foto, celular, fecha_nac, id, user, password, id_rols, id_ubicaciones FROM funcionarios")
+  consulta = ("SELECT f.nombres, f.apellidos, f.ci, f.foto, f.celular, f.fecha_nac, f.id, f.user, f.password, f.id_rols, f.id_ubicaciones " +
+              "FROM funcionarios f JOIN ubicaciones u ON f.id_ubicaciones = u.id " +
+              "AND u.id = " + str(id_ubicacion) + " ")
   cursor.execute(consulta)
   resultados = cursor.fetchall()
 

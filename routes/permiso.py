@@ -12,12 +12,24 @@ import locale
 permiso = APIRouter()
 
 @permiso.get("/permisos")
-async def getall():
+async def getall(ubicacion_id: int = 0, mes_id: int = 0):
   cnx = conectar_db()
 
   cursor = cnx.cursor()
 
-  consulta = ("SELECT motivo, id_dia, id_funcionarios, id, aprobado FROM permisos ORDER BY id DESC")
+  consulta = "SELECT p.motivo, p.id_dia, p.id_funcionarios, p.id, p.aprobado FROM permisos p "
+  
+  if ubicacion_id != 0:
+    consulta = consulta + ("JOIN funcionarios f ON p.id_funcionarios = f.id " +
+      "JOIN ubicaciones u ON f.id_ubicaciones = u.id " +
+      "AND u.id = " + str(ubicacion_id) + " ")
+
+  if mes_id != 0:
+    consulta = consulta + ("JOIN dia d ON p.id_dia = d.id " +
+      "JOIN mes m ON d.id_mes = m.id " +
+      "AND m.id = " + str(mes_id) + " ")
+    
+  consulta = consulta + "ORDER BY id DESC"
   cursor.execute(consulta)
   resultados = cursor.fetchall()
 
@@ -126,6 +138,19 @@ async def create(motivo: str = Form(...), id_funcionarios: str = Form(...)):
 
   # Obtener la fecha y hora actual
   fecha_actual = datetime.datetime.now()
+
+  consulta = "SELECT * FROM dia WHERE fecha = %s"
+  cursor.execute(consulta, (fecha_actual.strftime('%Y-%m-%d'),))
+  resultados = cursor.fetchall()
+
+  if resultados:
+    json_respuesta = {"mensaje": "Este Dia ya se registro"}
+    json_respuesta["ok"] = False
+
+    cursor.close()
+    cnx.close()
+
+    return json_respuesta
 
   dia = Dia(
     nombre = fecha_actual.strftime('%A'),

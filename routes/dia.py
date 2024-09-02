@@ -89,6 +89,19 @@ async def getbyid(id: int):
         "longitud": fila_aux[3],
         "id_dia": fila_aux[4]
       })
+    
+    if fila[2] == "Permiso":
+      consulta = ("SELECT motivo, aprobado FROM permisos WHERE id_dia = "+str(fila[13]))
+      cursor.execute(consulta)
+      resultados_aux = cursor.fetchall()
+
+      json_resultados["data"]["permisos"] = {}
+      
+      for fila_aux in resultados_aux:
+        json_resultados["data"]["permisos"] = {
+          "motivo": fila_aux[0],
+          "aprobado": fila_aux[1]
+        }
 
   if len(json_resultados["data"]) == 0:
     json_resultados["mensaje"] = "No se encontraron resultados para la consulta."
@@ -105,12 +118,13 @@ async def getallfuncionario(id: int):
 
   cursor = cnx.cursor()
 
-  consulta = ("SELECT nombre, numero, estado, detalle, fecha, hora_inicio, hora_inicio_reseso, hora_fin_reseso, hora_fin, id_funcionarios, id_mes FROM dia WHERE id_funcionarios = "+str(id))
+  consulta = ("SELECT nombre, numero, estado, detalle, fecha, hora_inicio, hora_inicio_reseso, hora_fin_reseso, hora_fin, id_funcionarios, id_mes, id FROM dia WHERE id_funcionarios = "+str(id))
   cursor.execute(consulta)
   resultados = cursor.fetchall()
 
   json_resultados = {"data": []}
 
+  i=0
   for fila in resultados:
     json_resultados["data"].append({
       "nombre": fila[0],
@@ -123,9 +137,31 @@ async def getallfuncionario(id: int):
       "hora_fin_reseso": str(fila[7]),
       "hora_fin": str(fila[8]),
       "id_funcionarios": fila[9],
-      "id_mes": fila[10]
+      "id_mes": fila[10],
+      "id": fila[11]
     })
     json_resultados["ok"] = True
+
+    if fila[2] == "Permiso":
+      consulta = ("SELECT motivo, aprobado FROM permisos WHERE id_dia = "+str(fila[11]))
+      cursor.execute(consulta)
+      resultados_aux = cursor.fetchall()
+
+      json_resultados["data"][i]["permisos"] = []
+      
+      for fila_aux in resultados_aux:
+        json_resultados["data"][i]["permisos"].append({
+          "motivo": fila_aux[0],
+          "aprobado": fila_aux[1]
+        })
+        # json_resultados["data"][i].append({
+        #   "motivo": fila_aux[0],
+        #   "aprobado": fila_aux[1]
+        # })
+        json_resultados["data"][i]["motivo"] = fila_aux[0]
+        json_resultados["data"][i]["aprobado"] = fila_aux[1]
+
+    i=i+1
 
   if len(json_resultados["data"]) == 0:
     json_resultados["mensaje"] = "No se encontraron resultados para la consulta."
@@ -149,7 +185,7 @@ async def create(dia: Dia, hora: Hora):
   for fila in resultados:
     coordenada1 = (fila[2], fila[1])
     coordenada2 = (hora.latitud, hora.longitud)
-    rango_deseado = 50
+    rango_deseado = 60
 
     # if not verificar_rango(coordenada1, coordenada2, rango_deseado):
     if verificar_rango(fila[2], fila[1], hora.latitud, hora.longitud, rango_deseado):

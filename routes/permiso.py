@@ -139,8 +139,8 @@ async def create(motivo: str = Form(...), id_funcionarios: str = Form(...)):
   # Obtener la fecha y hora actual
   fecha_actual = datetime.datetime.now()
 
-  consulta = "SELECT * FROM dia WHERE fecha = %s"
-  cursor.execute(consulta, (fecha_actual.strftime('%Y-%m-%d'),))
+  consulta = "SELECT * FROM dia WHERE fecha = %s AND id_funcionarios = %s"
+  cursor.execute(consulta, (fecha_actual.strftime('%Y-%m-%d'), id_funcionarios))
   resultados = cursor.fetchall()
 
   if resultados:

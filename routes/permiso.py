@@ -134,7 +134,7 @@ async def create(motivo: str = Form(...), id_funcionarios: str = Form(...)):
   cursor = cnx.cursor()
   
   # Establecer el idioma español
-  locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+  locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')
 
   # Obtener la fecha y hora actual
   fecha_actual = datetime.datetime.now()

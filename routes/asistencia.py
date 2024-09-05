@@ -90,7 +90,7 @@ async def registrarAsistencia(image: UploadFile = File(...), name: str = Form(..
     # Calcular la distancia euclidiana entre las características de los rostros
     distance = np.linalg.norm(embeddings1 - embeddings2)
     # Definir un umbral de distancia para determinar si corresponden a la misma persona o no
-    threshold = 0.9
+    threshold = 0.8
     if distance < threshold:
       print('Las imágenes corresponden a la misma persona.')
       json_resultados["mensaje"] = "Las imágenes corresponden a la misma persona."
@@ -104,7 +104,8 @@ async def registrarAsistencia(image: UploadFile = File(...), name: str = Form(..
       return json_resultados
 
   # Establecer el idioma español
-  locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+  # locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+  locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')
 
   # Obtener la fecha y hora actual
   fecha_actual = datetime.datetime.now()
